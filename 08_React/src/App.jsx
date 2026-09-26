@@ -1,33 +1,26 @@
-import { useEffect, useState } from "react";
 import "./App.css";
-import AddTask from "./components/AddTask";
-import Header from "./components/Header";
-import ShowTask from "./components/ShowTask";
+import Login from "./components/Auth/Login";
+import EmployeeDashboard from "./components/Dashboard/EmployeeDashboard";
+import AdminDashboard from "./components/Dashboard/AdminDashboard";
+import { useEffect, useState } from "react";
+import { setLocalStorage } from "./utils/LocalStorage";
 
 function App() {
-  const [taskList, setTasklist] = useState(JSON.parse(localStorage.getItem("tasklist")) || []);
-  const [task, setTask] = useState({});
-
-  useEffect(() => {
-    localStorage.setItem("tasklist",JSON.stringify(taskList));
-  }, [taskList])
-
+  const [user, setUser] = useState(null);
+  const handleLogin = (email, password) => {
+    if (email == "admin1@example.com" && password == "123") {
+      setUser("admin");
+    } else if (email == "" && password == "123") {
+      setUser("employee");
+    }else{
+      alert("invalid credentials");
+    }
+  };
   return (
-    <div className="App">
-      <Header />
-      <AddTask
-        taskList={taskList}
-        setTasklist={setTasklist}
-        task={task}
-        setTask={setTask}
-      />
-      <ShowTask
-        taskList={taskList}
-        setTasklist={setTasklist}
-        task={task}
-        setTask={setTask}
-      />
-    </div>
+    <>
+      {!user ? <Login handleLogin={handleLogin} /> : ""}
+      {user == "admin" ? <AdminDashboard /> : <EmployeeDashboard />}
+    </>
   );
 }
 
